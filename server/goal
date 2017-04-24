@@ -1,0 +1,24 @@
+What do we want to archieve?
+ - CTF Server
+When do we want to deliver?
+ - Runnable Server
+   - Scheduling von exploits
+   - Einfach neue exploits aufnehmen
+   - Dead Simple
+What form shall the delivery have?
+ - Software! Weniger Spezifikation
+ - Python, dann aber crashkurs
+
+What are milestones?
+ - 08. Mai
+  - Deadline Festsetzen
+  - Features
+  - Schnittstellen-Definitionen
+ - 29. Mai
+  - Prototyp I - Units/Functionable
+ - 12. Jun
+  - Prototyp II - Runable
+What shall be deliveries of those?
+ - Siehe oben
+How shall we split it up in groups?
+In what groups do you want to work?

@@ -1,0 +1,20 @@
+
+CTF Server
+
+ Features
+  - Executes exploits
+  - Manages workers
+  - Assigns exploits to workers
+  - Manages schedule
+  - Code Library
+  - Library is pushed to workers
+  - Network Monitoring (NM) on remotes / wireshark
+  - Regex for automatic alerts in NM
+
+ Requirements
+  - Extensible! It must be flexible! Each CTF varies!
+  - So: Every module should be configurable / plugable
+
+ This semester
+  - Integrate exploits for IoT devices
+  - "Play with IoT": we bring it all together and try it
