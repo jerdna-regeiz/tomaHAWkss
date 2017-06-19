@@ -12,6 +12,6 @@ ui = Blueprint('ui', __name__,
 def show(page):
     try:
         # return render_template('pages/%s.html' % page)
-        return "Hallo!"
+        return "Hallo"
     except TemplateNotFound:
         abort(404)
