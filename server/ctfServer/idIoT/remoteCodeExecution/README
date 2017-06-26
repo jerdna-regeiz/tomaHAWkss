@@ -7,7 +7,7 @@ Das Script remot_code_exec.py kopiert ein Script per ssh von lokal auf einen Rem
 Das script remote_code_exec.py ausführen mit  folgenden argumenten:
 
 1. Argument: Pfad der lokalen Datei welche auf  dem Remote ausgeführt werden soll.
-2. Argument: Pfad wo die lokale Datei auf dem Remote landen soll um ausgeführt zu werden.
+2. Argument: Pfad wo die lokale Datei auf dem Remote landen soll um ausgeführt zu werden. Ganzen Pfad + dateiname angeben, da dieser auch zur Ausführung des Skript verwendet wird.
 3. Argument: Host auf dem das Script ausgeführt werden soll
 4. Argument: Benutzer mit dem auf dem auf dem Remote Rechner angemeldet werden soll
 
