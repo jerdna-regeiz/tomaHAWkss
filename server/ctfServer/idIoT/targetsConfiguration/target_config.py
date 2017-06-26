@@ -12,17 +12,21 @@ class TargetConfig:
 	def __init__(self):
 		self.read()
 
-	def get(self, target, key):
-		if target in self.targets and key in self.targets[target]:
-			return self.targets[target][key]
+	def get(self, targetIp, key):
+		if targetIp in self.targets and key in self.targets[targetIp]:
+			return self.targets[targetIp][key]
 		else:
 			return '';
 
-	def put(self, target, key, value):
-		if target not in self.targets:
-			self.targets[target] = {}
+	def put(self, targetIp, key, value):
+		if targetIp not in self.targets:
+			self.targets[targetIp] = {}
 
-		self.targets[target][key] = value
+		self.targets[targetIp][key] = value
+		self.save()
+
+	def remove(self, targetIp):
+		self.targets.pop(targetIp, None)
 		self.save()
 
 	def getAll(self):
