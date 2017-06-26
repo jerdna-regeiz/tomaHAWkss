@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+  <head lang="en">
+    <title>CTF IDIOT</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- styles -->
+  </head>
+  <body>
+    <div class="container">
+      <br>
+      <div id="content"></div>
+    </div>
+    <!-- scripts -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/react/15.1.0/react.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/react/15.1.0/react-dom.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/react/0.13.3/JSXTransformer.js"></script>
+<script type="text/jsx">
+/** @jsx React.DOM */
+var Target = React.createClass({
+
+  // sets initial state
+  getInitialState: function(){
+    return {
+	name:'',
+        user:'',
+	password :'',
+	targetList:[]
+	 };
+  },
+
+  // sets state, triggers render method
+  handleChange: function(event){
+    this.setState({
+	name : event.target.value,
+	});
+  },
+
+  handleChangeUser: function(event){
+    this.setState({
+  user : event.target.value,
+  });
+  },
+
+
+  handleChangePass: function(event){
+    this.setState({
+  password : event.target.value,
+  });
+  },
+
+  handleClick: function(event){
+  const list = this.state.targetList;
+  var newTarget = {};
+  newTarget.name = this.state.name;
+  newTarget.user = this.state.user;
+  newTarget.password=this.state.password;
+  list.push(newTarget);
+  this.setState({
+	targetList:list
+	});
+  },
+
+  render: function() {
+        const list = this.state.targetList.map(
+	(target) =>
+	<li key={target.name}>
+	 {target.name.toUpperCase()}
+  || USER : {target.user}
+	|| PASSWORD: {target.password}
+	</li>
+	);
+
+
+    return (
+	<div>
+	<h1>Add new Targets</h1>
+    <div>
+    <form>
+      <div class="form-group">
+        <label for="name" >Name</label>
+        <br/>
+        <input type="text" class="form-control" id="name" value={this.state.name} onChange={this.handleChange} placeholder="name your target" />
+      </div>
+      <div class="form-group">
+        <label for="user">User</label>
+        <br/>
+        <input type="text" class="form-control" id="user" value={this.state.user} onChange={this.handleChangeUser} placeholder="user" />
+      </div>
+	<div class="form-group">
+        <label for="password">Password</label>
+        <br/>
+        <input type="text" class="form-control" id="password" value={this.state.password} onChange={this.handleChangePass} placeholder="password" />
+      </div>
+        <input type="button" onClick={this.handleClick} value="Add" />
+      </form>
+      </div>
+  <div>
+	       <ul>
+           {list}
+         </ul>
+	    </div>
+   </div>
+    )
+  }
+
+});
+ReactDOM.render(
+  React.createElement(Target, null),
+  document.getElementById('content')
+);
+</script>
+ </body>
+</html>

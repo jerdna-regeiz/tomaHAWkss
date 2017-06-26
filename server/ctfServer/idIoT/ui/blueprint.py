@@ -17,4 +17,6 @@ def status():
 @ui.route('/monitor')
 def monitor():
     return render_template('monitor.html')
-
+@ui.route('/target')
+def target() :
+    return render_template('target.html')
