@@ -56,7 +56,7 @@ var Load = React.createClass({
 
   handleSelect: function(event){
 		this.setState({
-		exploitChoose: event.target.options
+		exploitChoose: event.target.selectedOptions
 		});
   },
 
@@ -142,7 +142,7 @@ var Load = React.createClass({
       <div class="form-group">
         <label for="selectExploit">Select Exploit to START/STOP/DELETE</label>
         <br/>
-        <select multiple class="form-control" onChange={this.handleSelect}>
+        <select multiple={true}  class="form-control" onChange={this.handleSelect}>
             {result}
         </select>
       </div>
