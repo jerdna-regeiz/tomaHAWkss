@@ -31,14 +31,14 @@ def exploit(name, period) :
 	
 @app.route('/runMonitor', methods=["POST"])
 def monitor():
-#Monitoring should be called here and response to the gui
+	#Monitoring should be called here and response to the gui
 
 	resp=Response("post request")
 	return resp
 
 @app.route('/addTarget', methods=["POST"])
 def target() :
-#Target should be added and saved here
+	#Target should be added and saved here
 	resp=Response("post request")
 	return resp	
 
