@@ -37,13 +37,3 @@ class TargetConfig:
 		if conf_file.is_file():
 			with open(self.path) as json_data_file:
 			    self.targets = json.load(json_data_file)
-
-def main():
-	conf = TargetConfig()
-	conf.put("172.11.11.11", "user", "root")
-	print(conf.get("172.11.11.11", "user"))
-	print("\n")
-	print(conf.getAll())
-
-if __name__ == "__main__":
-    main()
