@@ -7,11 +7,14 @@ test = "Hmpf"
 ui = Blueprint('ui', __name__,
                         template_folder='templates')
 
-@ui.route('/', defaults={'page': 'index'})
-@ui.route('/<page>')
-def show(page):
-    try:
-        # return render_template('pages/%s.html' % page)
-        return "Hallo"
-    except TemplateNotFound:
-        abort(404)
+@ui.route('/')
+def index():
+    return render_template('index.html')
+@ui.route('/status')
+def status():
+    return render_template('status.html')
+
+@ui.route('/monitor')
+def monitor():
+    return render_template('monitor.html')
+

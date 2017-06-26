@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+  <head lang="en">
+    <title>CTF IDIOT</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- styles -->
+  </head>
+  <body>
+    <div class="container">
+      <br>
+      <div id="content"></div>
+    </div>
+    <!-- scripts -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/react/15.1.0/react.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/react/15.1.0/react-dom.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/react/0.13.3/JSXTransformer.js"></script>
+<script type="text/jsx">
+/** @jsx React.DOM */
+var Load = React.createClass({
+
+  // sets initial state
+  getInitialState: function(){
+    return {
+	exploit:'',
+  period:'',
+	exploitList : [],
+	exploitChoose:[]
+	 };
+  },
+
+  // sets state, triggers render method
+  handleChange: function(event){
+    this.setState({
+	exploit : event.target.value,
+	});
+  },
+
+  handleChangePeriod: function(event){
+    this.setState({
+  period : event.target.value,
+  });
+  },
+
+  handleClick: function(event){
+  const list = this.state.exploitList;
+  var newExploit = {};
+  newExploit.name=this.state.exploit;
+  newExploit.status="NO INFO";
+  newExploit.feedback="NO INFO";
+  newExploit.period=this.state.period;
+  list.push(newExploit);
+  this.setState({
+	exploitList:list
+	});
+  },
+
+  handleSelect: function(event){
+		this.setState({
+		exploitChoose: event.target.options
+		});
+  },
+
+ handleChoose: function(event){
+ const list=this.state.exploitList;
+ var toUpdate=[];
+ for(let a=0; a<this.state.exploitChoose.length; a++){
+   console.log(this.state.exploitChoose[a].text);
+   toUpdate.push(this.state.exploitChoose[a].text);
+ }
+ var i,j;
+	for(i=0; i< list.length ; i++){
+    for(j=0; j< toUpdate.length; j++){
+      if(list[i].name==toUpdate[j]){
+        list[i].status=list[i].status=="RUNNING" ? "STOP" :"RUNNING";
+      }
+    }
+ 	}
+
+ this.setState({
+ 	exploitList:list
+ });
+
+ },
+ handleDelete: function(event){
+   const list=this.state.exploitList;
+   var toDelete=[];
+   for(let a=0; a<this.state.exploitChoose.length; a++){
+     toDelete.push(this.state.exploitChoose[a].text);
+   }
+   var i,j;
+  	for(i=0; i< list.length ; i++){
+      for(j=0; j< toDelete.length; j++){
+        if(list[i].name==toDelete[j]){
+          list.splice(i,1);
+        }
+      }
+   	}
+ this.setState({
+   exploitList:list
+ });
+
+ },
+
+
+  render: function() {
+        const list = this.state.exploitList.map(
+	(exploit) =>
+	<li key={exploit.name}>
+	 {exploit.name.toUpperCase()}
+  || PERIOD : {exploit.period}
+	|| STATUS: {exploit.status}
+	|| FEEDBACK:{exploit.feedback}
+	</li>
+	);
+	const tmp=this.state.exploitList;
+	let result=[];
+	for(let i=0; i <tmp.length; i++){
+	result.push(
+	<option key={tmp[i].name} value={tmp[i].name}>{tmp[i].name}</option>
+	);
+	}
+
+    return (
+	<div>
+	<h1>Load new exploit</h1>
+    <div>
+    <form>
+      <div class="form-group">
+        <label for="name" >Name</label>
+        <br/>
+        <input type="text" class="form-control" id="name" value={this.state.exploit} onChange={this.handleChange} placeholder="name your exploit" />
+      </div>
+      <div class="form-group">
+        <label for="period">Period</label>
+        <br/>
+        <input type="text" class="form-control" id="period" value={this.state.period} onChange={this.handleChangePeriod} placeholder="period" />
+      </div>
+        <input type="button" onClick={this.handleClick} value="load" />
+        </form>
+      </div>
+
+      <div class="form-group">
+        <label for="selectExploit">Select Exploit to START/STOP/DELETE</label>
+        <br/>
+        <select multiple class="form-control" onChange={this.handleSelect}>
+            {result}
+        </select>
+      </div>
+        <input type="button" onClick={this.handleChoose} value="START/STOP" />
+        <input type="button" onClick={this.handleDelete} value="DELETE" />
+	    <div>
+	       <ul>
+           {list}
+         </ul>
+	    </div>
+</div>
+    )
+  }
+
+});
+ReactDOM.render(
+  React.createElement(Load, null),
+  document.getElementById('content')
+);
+</script>
+ </body>
+</html>

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+  <head lang="en">
+    <meta charset="UTF-8">
+    <title>CTF IDIOT</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- styles -->
+  </head>
+  <body>
+    <div class="container">
+      <h1>Network Monitoring</h1>
+      <br>
+      <div id="content"></div>
+    </div>
+    <!-- scripts -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/react/15.1.0/react.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/react/15.1.0/react-dom.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/react/0.13.3/JSXTransformer.js"></script>
+<script type="text/jsx">
+/** @jsx React.DOM */
+var Monitor = React.createClass({
+
+  // sets initial state
+  getInitialState: function(){
+    return {
+	regex:'',
+	regexList : [],
+	regexChoose:''
+	};
+},
+  handleChange: function(event){
+    this.setState({
+	regex : event.target.value,
+	});
+  },
+
+  handleSelect: function(event){
+		this.setState({
+		regexChoose: event.target.value
+		});
+  },
+
+ handleChoose: function(event){
+         	alert(this.state.regexChoose);
+ },
+
+  handleClick: function(event){
+  const list = this.state.regexList;
+  list.push(this.state.regex);
+  this.setState({
+	exploitList:list
+	});
+  },
+
+
+
+  render: function() {
+        const list = this.state.regexList.map(
+	(regex) =>
+	<li key={regex}>
+	 {regex}
+	</li>
+	);
+
+	const tmp=this.state.regexList;
+	let result=[];
+	for(let i=0; i <tmp.length; i++){
+	result.push(
+	<option key={tmp[i]} value={tmp[i]}>{tmp[i]}</option>
+	);
+	}
+    return (
+	<div>
+		<div>
+		<label>
+        	<input type="text" value={this.state.regex} onChange={this.handleChange} placeholder="write new regex" />
+      		</label>
+      		<input type="button" onClick={this.handleClick} value="add" />
+		</div>
+
+<div>
+<select multiple={true} onChange={this.handleSelect}>
+{result}
+</select>
+</div>
+
+<input type="button" onClick={this.handleChoose} value="APPLY CHOSEN REGEX" />
+
+	</div>
+    )
+ }
+
+});
+ReactDOM.render(
+  React.createElement(Monitor, null),
+  document.getElementById('content')
+);
+</script>
+  </body>
+</html>

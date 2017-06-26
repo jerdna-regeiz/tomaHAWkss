@@ -1,0 +1,21 @@
+{
+  "name": "idiot",
+  "authors": [
+    "lilli <caothivananh98@gmail.com>"
+  ],
+  "description": "ctf gui",
+  "main": "",
+  "license": "MIT",
+  "homepage": "",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "react": "^15.6.1",
+    "bootstrap": "^3.3.7"
+  }
+}
