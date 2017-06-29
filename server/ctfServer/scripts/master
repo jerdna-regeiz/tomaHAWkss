@@ -16,9 +16,11 @@ git pull
 cd
 fi
 
-salt-cp "*" assets/start_minion ~/
-salt "*" cmd.run "chmod +x start_minion"
-salt "*" cmd.run "./start_minion"
+cp src/tomaHAWkss/server/ctfServer/scripts/minion assets/minion
+
+salt-cp "*" assets/minion ~/
+salt "*" cmd.run "chmod +x minion"
+salt "*" cmd.run "./minion"
 
 source src/venv/bin/activate
 cd src/tomaHAWkss/server/ctfServer
