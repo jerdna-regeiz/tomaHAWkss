@@ -1,0 +1,28 @@
+#!/bin/bash
+cd
+
+if [ ! -d "src" ]; then
+mkdir src
+cd src
+virtualenv -p /usr/bin/python3 venv
+source venv/bin/activate
+pip install Flask
+deactivate
+git clone https://github.com/jerdna-regeiz/tomaHAWkss.git
+cd
+else
+cd src/tomaHAWkss
+git pull
+cd
+fi
+
+cp src/tomaHAWkss/server/ctfServer/scripts/minion assets/minion
+
+salt-cp "*" assets/minion ~/
+salt "*" cmd.run "chmod +x minion"
+salt "*" cmd.run "./minion"
+
+source src/venv/bin/activate
+cd src/tomaHAWkss/server/ctfServer
+
+./main.py

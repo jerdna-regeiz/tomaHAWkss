@@ -5,7 +5,7 @@ from flask import Flask
 from flask import Response
 from flask import request
 from . import config
-from exploitsConfiguration.config import ExploitConfig
+from .exploitsConfiguration.config import ExploitConfig
 
 app = Flask(__name__)
 for blue in config.blueprints:
