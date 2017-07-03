@@ -14,6 +14,7 @@
 <script src="//cdnjs.cloudflare.com/ajax/libs/react/15.1.0/react.js"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/react/15.1.0/react-dom.js"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/react/0.13.3/JSXTransformer.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <script type="text/jsx">
 /** @jsx React.DOM */
 var Load = React.createClass({
@@ -24,7 +25,7 @@ var Load = React.createClass({
 	exploit:'',
   period:'',
 	exploitList : [],
-	exploitChoose:[]
+	exploitChoose:''
 	 };
   },
 
@@ -56,49 +57,54 @@ var Load = React.createClass({
 
   handleSelect: function(event){
 		this.setState({
-		exploitChoose: event.target.selectedOptions
+		exploitChoose: event.target.value
 		});
   },
 
  handleChoose: function(event){
- const list=this.state.exploitList;
- var toUpdate=[];
- for(let a=0; a<this.state.exploitChoose.length; a++){
-   console.log(this.state.exploitChoose[a].text);
-   toUpdate.push(this.state.exploitChoose[a].text);
- }
- var i,j;
-	for(i=0; i< list.length ; i++){
-    for(j=0; j< toUpdate.length; j++){
-      if(list[i].name==toUpdate[j]){
-        list[i].status=list[i].status=="RUNNING" ? "STOP" :"RUNNING";
-      }
-    }
- 	}
+   var link = "/exploit" + "/" + this.state.exploitChoose +"/"+ this.state.exploitChoose.period;
+   axios.post(link)
+ 	  .then(function(res)
+ 		{
+ 		alert("starting/stopping exploit sucessfully");
+    const list=this.state.exploitList;
+    var i;
+   	for(i=0; i< list.length ; i++){
+         if(list[i].name==this.state.exploitChoose){
+           list[i].status=list[i].status=="RUNNING" ? "STOP" :"RUNNING";
+         }
+    	}
 
- this.setState({
- 	exploitList:list
- });
+    this.setState({
+    	exploitList:list
+    });
+
+ 		}.bind(this), function(error)
+ 		{
+ 		alert("starting/stopping exploit failed");
+ 		});
 
  },
  handleDelete: function(event){
-   const list=this.state.exploitList;
-   var toDelete=[];
-   for(let a=0; a<this.state.exploitChoose.length; a++){
-     toDelete.push(this.state.exploitChoose[a].text);
-   }
-   var i,j;
-  	for(i=0; i< list.length ; i++){
-      for(j=0; j< toDelete.length; j++){
-        if(list[i].name==toDelete[j]){
-          list.splice(i,1);
-        }
-      }
-   	}
- this.setState({
-   exploitList:list
- });
-
+   var link = "/exploit" + "/" + this.state.exploitChoose +"/"+ this.state.exploitChoose.period;
+   axios.delete(link)
+    .then(function(res)
+    {
+    alert("deleting exploit sucessfully");
+    const list=this.state.exploitList;
+    var i;
+   	for(i=0; i< list.length ; i++){
+         if(list[i].name==this.state.exploitChoose){
+           list.splice(i,1);
+         }
+    	}
+  this.setState({
+    exploitList:list
+  });
+    }.bind(this), function(error)
+    {
+    alert("deleting exploit failed");
+    });
  },
 
 

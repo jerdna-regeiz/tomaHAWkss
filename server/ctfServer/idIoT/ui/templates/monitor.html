@@ -16,6 +16,7 @@
 <script src="//cdnjs.cloudflare.com/ajax/libs/react/15.1.0/react.js"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/react/15.1.0/react-dom.js"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/react/0.13.3/JSXTransformer.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <script type="text/jsx">
 /** @jsx React.DOM */
 var Monitor = React.createClass({
@@ -25,7 +26,8 @@ var Monitor = React.createClass({
     return {
 	regex:'',
 	regexList : [],
-	regexChoose:''
+	regexChoose:'',
+	result:''
 	};
 },
   handleChange: function(event){
@@ -41,7 +43,19 @@ var Monitor = React.createClass({
   },
 
  handleChoose: function(event){
-         	alert(this.state.regexChoose);
+ var link ="/runMonitor" +"/"+this.state.regexChoose;
+   axios.post(link)
+	  .then(function(res)
+		{
+		alert("monitor is running");
+    console.log(res);
+		this.setState({
+		result:res.data.result,
+		});
+		}.bind(this), function(error)
+		{
+		alert("running monitor failed");
+		});
  },
 
   handleClick: function(event){
@@ -85,7 +99,9 @@ var Monitor = React.createClass({
 </div>
 
 <input type="button" onClick={this.handleChoose} value="APPLY CHOSEN REGEX" />
-
+<div>
+<h2> {this.state.result} </h2>
+</div>
 	</div>
     )
  }

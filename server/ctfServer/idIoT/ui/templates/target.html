@@ -14,6 +14,7 @@
 <script src="//cdnjs.cloudflare.com/ajax/libs/react/15.1.0/react.js"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/react/15.1.0/react-dom.js"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/react/0.13.3/JSXTransformer.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <script type="text/jsx">
 /** @jsx React.DOM */
 var Target = React.createClass({
@@ -49,7 +50,12 @@ var Target = React.createClass({
   },
 
   handleClick: function(event){
-  const list = this.state.targetList;
+  var link = "/addTarget" + "/" + this.state.name +"/"+ this.state.user+ "/" + this.state.password;
+  axios.post(link)
+	  .then(function(res)
+		{
+		alert("adding target sucessfully");
+  var list = this.state.targetList;
   var newTarget = {};
   newTarget.name = this.state.name;
   newTarget.user = this.state.user;
@@ -58,6 +64,11 @@ var Target = React.createClass({
   this.setState({
 	targetList:list
 	});
+
+		}.bind(this), function(error)
+		{
+		alert("adding target failed");
+		});
   },
 
   render: function() {
