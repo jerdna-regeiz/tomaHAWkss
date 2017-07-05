@@ -4,40 +4,46 @@
 from flask import Flask
 from flask import Response
 from flask import request
+from flask import json
 from . import config
-from .exploitsConfiguration.config import ExploitConfig
+#exploit conf still doesnt work by me(lilli), please check it out
+#from exploitsConfiguration.config import ExploitConfig
 
 app = Flask(__name__)
 for blue in config.blueprints:
-    app.register_blueprint(blue)
+   app.register_blueprint(blue)
 
 @app.route('/exploit/<name>/<period>', methods=["POST","DELETE"])
 def exploit(name, period) :
-	conf = ExploitConfig()
+#	conf = ExploitConfig()
 	if request.method =='POST': 
 		#Exploit with <name> and <period> should be excuted after scheduling here
 		#Exploit should be in the file with <name> in the same folder
-		conf.put(name, "period", period)
-		resp=Response("post request")
-		resp.headers['Access-Control-Allow-Origin'] ='*'
-		return resp
+#		conf.put(name, "period", period)
+		addE={'status' :'ok'}
+		return json.dumps(addE)
 	else: 
 
 		#Exploit with name = <name> should be stopped here
-		conf.remove(name)
-		resp=Response("delete request")
-		resp.headers['Access-Control-Allow-Origin'] ='*'
-		return resp
+#		conf.remove(name)
+		deleteE={'status':'ok'}
+		return json.dumps(deleteE)
 	
-@app.route('/runMonitor', methods=["POST"])
-def monitor():
+@app.route('/runMonitor/<regex>', methods=["POST"])
+def monitor(regex):
 	#Monitoring should be called here and response to the gui
+	monitor={'time' : '2017-07-03','result' : 'monitoring is running, here is the result'}
+	return json.dumps(monitor)
 
-	resp=Response("post request")
-	return resp
-
-@app.route('/addTarget', methods=["POST"])
-def target() :
+@app.route('/exploitResult', methods=["POST"])
+def result():
+	#so should implement result(a json object) of all exploit with its status sofar
+	#for example there are current ex1, ex2, ex3 
+	results={'ex1':'SUCESS', 'ex2':'FAILED','ex3':'IS RUNNING'}
+	return json.dumps(results)
+	
+@app.route('/addTarget/<name>/<user>/<password>', methods=["POST"])
+def target(name, user, password) :
 	#Target should be added and saved here
 	resp=Response("post request")
 	return resp	

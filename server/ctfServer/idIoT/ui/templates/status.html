@@ -107,6 +107,28 @@ var Load = React.createClass({
     });
  },
 
+ handleImport: function(event){
+   var link = "/exploitResult";
+   axios.post(link)
+    .then(function(res)
+    {
+      console.log(res);
+    alert("importing exploit result sucessfully");
+    const list=this.state.exploitList;
+    var i;
+     for(i=0; i< list.length ; i++){
+       const name= list[i].name;
+       list[i].feedback +=',';
+       list[i].feedback += res.data[name];
+     }
+  this.setState({
+    exploitList:list
+  });
+    }.bind(this), function(error)
+    {
+    alert("importing exploit result failed");
+    });
+ },
 
   render: function() {
         const list = this.state.exploitList.map(
@@ -115,7 +137,7 @@ var Load = React.createClass({
 	 {exploit.name.toUpperCase()}
   || PERIOD : {exploit.period}
 	|| STATUS: {exploit.status}
-	|| FEEDBACK:{exploit.feedback}
+	|| FEEDBACK:{exploit.feedback.toUpperCase()}
 	</li>
 	);
 	const tmp=this.state.exploitList;
@@ -154,7 +176,8 @@ var Load = React.createClass({
       </div>
         <input type="button" onClick={this.handleChoose} value="START/STOP" />
         <input type="button" onClick={this.handleDelete} value="DELETE" />
-	    <div>
+        <input type="button" onClick={this.handleImport} value="IMPORT RESULT"/>
+      <div>
 	       <ul>
            {list}
          </ul>
