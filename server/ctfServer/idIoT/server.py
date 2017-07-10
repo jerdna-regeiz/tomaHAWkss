@@ -5,12 +5,13 @@ from flask import Flask
 from flask import Response
 from flask import request
 from flask import json
-from . import config
+
+from config import blueprints
 #exploit conf still doesnt work by me(lilli), please check it out
 #from exploitsConfiguration.config import ExploitConfig
 
 app = Flask(__name__)
-for blue in config.blueprints:
+for blue in blueprints:
    app.register_blueprint(blue)
 
 @app.route('/exploit/<name>/<period>', methods=["POST","DELETE"])

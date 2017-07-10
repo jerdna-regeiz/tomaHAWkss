@@ -3,8 +3,10 @@
 
 from idIoT.ui.blueprint import ui
 from idIoT.bib.blueprint import bib
+from idIoT.monitoring.blueprint import monitoring
 
 blueprints = [
             ui,
-            bib
+            bib,
+            monitoring
         ]
