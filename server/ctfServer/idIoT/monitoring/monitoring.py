@@ -7,6 +7,7 @@ from collections import deque
 from pathlib import Path
 from subprocess import Popen
 from threading import Thread
+from time import sleep
 
 import inotify.adapters
 
@@ -45,14 +46,10 @@ class Event:
 
 class Monitoring(Thread):
     def __init__(self, time_delta=30):
-        super(Thread, self).__init__(daemon=True)
-
+        Thread.__init__(self)
+        self.daemon = False
         self.regs = ["flag"]
         self.running = True
-
-        # TODO vielleicht auf ports und ip addressen filtern
-        # self.ips = []
-        # self.ports = []
 
         self.time_delta = time_delta
         self.p = Path("/tmp/tcpflow")
@@ -85,6 +82,7 @@ class Monitoring(Thread):
         return [x.to_dict() for x in self.events]
 
     def cleanup(self):
+        """Remove oldest packets if packet count exceeds max_files"""
         packets = [x for x in self.p.iterdir() if x.is_file()]
         if len(packets) > self.max_files:
             packets.sort(key=lambda x: x.stat().st_ctime)
@@ -94,13 +92,15 @@ class Monitoring(Thread):
 
     def stop(self):
         self.running = False
+        # create a empty file to generate an event to stop the thread
+        sleep(0.1)
+        self.p.joinpath("foobar").touch()
 
-    def run(self, start_tcpflow=True):
+    def run(self):
         i = inotify.adapters.Inotify()
 
-        if start_tcpflow:
-            self.proc = Popen(
-                ["tcpflow", "-i", "lo", "-S", "enable_report=NO"], cwd=self.p)
+        self.proc = Popen(
+            ["tcpflow", "-i", "lo", "-S", "enable_report=NO"], cwd=self.p.as_posix())
 
         i.add_watch(b"/tmp/tcpflow")
 
@@ -115,22 +115,28 @@ class Monitoring(Thread):
                         self.file_count += 1
                         if self.file_count > self.max_files:
                             self.cleanup()
-                        s = filename.decode()
-                        self.scan_file(Path(s))
+                        #s = filename.decode()
+                        self.scan_file(self.p.joinpath(filename))
+
 
         finally:
             i.remove_watch(b"/tmp/tcpflow")
+            
+            # deleting packets 
+            for f in self.p.iterdir():
+                f.unlink()
 
-            if start_tcpflow:
-                self.proc.kill()
+            # make sure to kill tcpflow
+            #self.proc.terminate()
+            self.proc.kill()
 
     def split_filename(self, filename):
+        """Parse a tcpflow filename and return a tuple (src_adress,src_port,dsta_ddress,dst_port) """
         return (filename[0:15], filename[16:21], filename[22:37],
                 filename[38:43])
 
     def pretty_print_file(self, file, data=True):
         create_time = file.stat().st_ctime
-        # print(create_time)
         print(
             datetime.datetime.fromtimestamp(create_time).strftime(
                 '%Y-%m-%d %H:%M:%S'))
@@ -141,8 +147,8 @@ class Monitoring(Thread):
         print("##########################")
 
     def create_event(self, file, preceding_events=None):
+        """Return a Event instance from a tcpflow file"""
         create_time = file.stat().st_ctime
-        # print(create_time)
         timestamp = datetime.datetime.fromtimestamp(create_time).strftime(
             '%Y-%m-%d %H:%M:%S')
         description = "[{}] src: {}:{}, dst: {}:{}".format(
@@ -154,17 +160,19 @@ class Monitoring(Thread):
         return Event(description, data, preceding_events)
 
     def scan_file(self, file):
+        """Read a tcpflow packetfile and add it create an event if it matches one of the regexes """
+
+        print(file.absolute())
         with file.open("r") as fd:
             s = fd.read()
         for r in self.regs:
             if re.findall(r, s):
-                print("bingo")
-                # self.pretty_print_file(file)
                 event = self.create_event(file)
                 create_time = file.stat().st_ctime
 
                 event_list = []
-                print("suche ältere dateien")
+
+                # looking for packets from the same source
                 src = file.name[:16]
                 dst = file.name[22:-5]
                 for i in self.p.iterdir():

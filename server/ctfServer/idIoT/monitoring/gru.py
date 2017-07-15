@@ -25,27 +25,43 @@ class Gru:
         return False
 
     def stop_monitoring_local(self):
-        self.monitor.stop()
+        if self.monitor is None:
+            return False
+        else:
+            self.monitor.stop()
+            self.monitor = None
+            return True
 
     def stop_monitoring_remote(self, remote):
         requests.get("http://{}:5000/stop".format(remote))
 
     def add_regex_local(self, regex):
         # einen neuen regelären ausdruck für den lokalen monitor hinzufügen
-        self.monitor.regs.append(regex)
+        if self.monitor is None:
+            return False
+        else:
+            self.monitor.regs.append(regex)
+            return True
 
     def add_regex_remote(self, remote, regex):
         # einen neuen regelären ausdruck für den remote monitor hinzufügen
         requests.post("http://{}:5000/add_regex".format(remote), data={'regex': regex})
 
     def remove_regex_local(self, regex):
-        self.monitor.remove_regex(regex)
+        if self.monitor is None:
+            return False
+        else:
+            self.monitor.remove_regex(regex)
+            return True
 
     def remove_regex_remote(self,remote, regex):
         requests.post("http://{}:5000/del_regex".format(remote), data={'regex': regex})
 
     def list_regex_local(self):
-        return self.monitor.regs
+        if self.monitor is None:
+            return None
+        else:
+            return self.monitor.regs
 
     def list_regex_remote(self, remote):
         response = requests.get("http://{}:5000/list_regex".format(remote))

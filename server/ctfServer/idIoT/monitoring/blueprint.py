@@ -17,6 +17,13 @@ regulären ausdrücken und das abrufen von gefundenen paketen erlaubt
 
 Zum übergeben von Argumenten werden http-post requests verwendet mit den argumenten
 remote ( adresse des minions ) und regex ( regulärer ausdruck als string ) wo nötig
+
+Events werden json codiert geliefert in Form einer Liste gefüllt mit objekten(dicts) z.B.
+{
+    "description": "<Zeitstempel und IP adressen>",
+    "data": <Paketinhalt>,
+    "preceding_events": <Liste aus vorher erhaltenen im gleichem format wie dieses>
+}
 """
 
 @monitoring.route("/start_local")
@@ -31,11 +38,15 @@ def start_remote():
     if gru.start_monitoring_remote(request.form["remote"]):
         return("",200)
     else:
-        return ("Could not start local monitoring on: {}".format(request.form["remote"]),500)
+        return ("Could not start monitoring on: {}".format(request.form["remote"]),500)
 
 @monitoring.route("/stop_local")
 def stop_local():
-    return("",200)
+    if gru.stop_monitoring_local():
+        return("",200)
+    else:
+        return ("local monitoring is probably not running",503)
+        
 
 @monitoring.route("/stop_remote",methods=['POST'])
 def stop_remote():
@@ -48,8 +59,10 @@ def stop_remote():
 def add_regex_local():
     if not request.form["regex"]:
         return ("",400)
-    gru.add_regex_local(request.form["regex"])
-    return ("", 200)
+    if gru.add_regex_local(request.form["regex"]):
+        return ("", 200)
+    else:
+        return ("local monitoring is probably not running",503)
 
 @monitoring.route("/add_regex_remote",methods=['POST'])
 def add_regex_remote():
@@ -64,8 +77,10 @@ def remove_regex_local():
     if not request.form["regex"]:
         return ("",400)
 
-    gru.remove_regex_local(request.form["regex"])
-    return ("", 200)
+    if gru.remove_regex_local(request.form["regex"]):
+        return ("", 200)
+    else:
+        return ("local monitoring is probably not running", 503)
 
 @monitoring.route("/remove_regex_remote",methods=['POST'])
 def remove_regex_remote():
@@ -78,7 +93,11 @@ def remove_regex_remote():
 
 @monitoring.route("/list_regex_local")
 def list_regex_local():
-    return json.dumps(gru.list_regex_local())
+    result = gru.list_regex_local()
+    if result is None:
+        return("local monitoring is probably not running",503)
+    else:
+        return json.dumps(gru.list_regex_local())
 
 
 @monitoring.route("/list_regex_remote",methods=['POST'])
