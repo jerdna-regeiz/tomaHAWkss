@@ -17,6 +17,7 @@ fi
 chmod +x src/tomaHAWkss/server/ctfServer/assets/initLib.sh
 chmod +x src/tomaHAWkss/server/ctfServer/assets/deploy.sh
 cd  src/tomaHAWkss/server/ctfServer/assets/
+mkdir lib
 ./initLib.sh
 ./deploy.sh
 cd
