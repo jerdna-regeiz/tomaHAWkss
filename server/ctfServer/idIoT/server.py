@@ -83,7 +83,7 @@ def exploitUpload():
 		if file and allowed_file(file.filename):
 			filename = secure_filename(file.filename)
 			file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-			subprocess.call("assets/deploy.sh", shell=True)
+			subprocess.call(os.path.join('assets','deploy.sh'), shell=True)
 			return 'succesfully added ' + file.filename
 		return ''
 
