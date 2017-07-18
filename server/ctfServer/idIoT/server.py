@@ -18,7 +18,7 @@ from flask import Flask, request, redirect, url_for
 from werkzeug.utils import secure_filename
 
 UPLOAD_FOLDER = 'assets/lib'
-ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
+ALLOWED_EXTENSIONS = set(['py'])
 
 app = Flask(__name__, static_url_path='')
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
