@@ -11,8 +11,12 @@ import os
 from os import walk
 from flask import Flask, request, redirect, url_for
 from werkzeug.utils import secure_filename
-import salt.client
 import subprocess
+
+import logging
+logging.basicConfig(stream=sys.stdout, level=logging.DEBUG, format="%(message)s")
+
+import salt.client
 
 #exploit conf still doesnt work by me(lilli), please check it out
 #from exploitsConfiguration.config import ExploitConfig
