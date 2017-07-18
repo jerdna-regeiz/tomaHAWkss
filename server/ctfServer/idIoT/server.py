@@ -64,7 +64,7 @@ def target(name, user, password) :
 def exploitDelete(file_name):
 	if request.method == 'DELETE':
 		os.remove(os.path.join(app.config['UPLOAD_FOLDER'], file_name))
-		subprocess.call(['salt "*" cmd.run "rm ~/lib/' + file_name + '"'], shell=True)
+		subprocess.call('salt "*" cmd.run "rm ~/lib/' + file_name + '"', shell=True)
 		return 'succesfully deleted ' + file_name
 
 @app.route('/exploit/upload', methods=["POST"])
@@ -84,7 +84,7 @@ def exploitUpload():
 		if file and allowed_file(file.filename):
 			filename = secure_filename(file.filename)
 			file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-			subprocess.call(["salt-cp", "*", "\"" + os.path.join('assets/lib', filename) +"\"", "~/lib"])
+			subprocess.call(["salt-cp", "*", os.path.join('assets/lib', filename), "~/lib"])
 			#subprocess.call(os.path.join('assets','deploy.sh'), shell=True)
 			return 'succesfully added ' + file.filename
 		return ''
