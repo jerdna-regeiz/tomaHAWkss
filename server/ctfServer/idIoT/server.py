@@ -84,7 +84,7 @@ def exploitUpload():
 		if file and allowed_file(file.filename):
 			filename = secure_filename(file.filename)
 			file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-			subprocess.call(['salt-cp "*" ' + os.path.join(app.config['UPLOAD_FOLDER'], filename) + ' ~/lib'], shell=True)
+			subprocess.call(['salt-cp "*" ' + os.path.join('assets/lib', filename) + ' ~/lib'], shell=True)
 			#subprocess.call(os.path.join('assets','deploy.sh'), shell=True)
 			return 'succesfully added ' + file.filename
 		return ''
