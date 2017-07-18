@@ -69,7 +69,9 @@ def target(name, user, password) :
 def exploitDelete(file_name):
 	if request.method == 'DELETE':
 		os.remove(os.path.join(app.config['UPLOAD_FOLDER'], file_name))
-		subprocess.call('salt "*" cmd.run "rm ~/lib/' + file_name + '"', shell=True)
+		local = salt.client.LocalClient()
+		local.cmd('*', 'cmd.run', ['salt "*" cmd.run "rm ~/lib/' + file_name + '"'])
+		#subprocess.call('salt "*" cmd.run "rm ~/lib/' + file_name + '"', shell=True)
 		return 'succesfully deleted ' + file_name
 
 @app.route('/exploit/upload', methods=["POST"])
