@@ -6,16 +6,16 @@ from flask import Response
 from flask import request
 from flask import json
 from flask.json import jsonify
-import subprocess
-
 from config import blueprints
-#exploit conf still doesnt work by me(lilli), please check it out
-#from exploitsConfiguration.config import ExploitConfig
-
 import os
 from os import walk
 from flask import Flask, request, redirect, url_for
 from werkzeug.utils import secure_filename
+import salt.client
+import subprocess
+
+#exploit conf still doesnt work by me(lilli), please check it out
+#from exploitsConfiguration.config import ExploitConfig
 
 UPLOAD_FOLDER = 'assets/lib'
 ALLOWED_EXTENSIONS = set(['py'])
@@ -81,12 +81,14 @@ def exploitUpload():
 		if file.filename == '':
 			flash('No selected file')
 			return 'No selected file'
+
 		if file and allowed_file(file.filename):
 			filename = secure_filename(file.filename)
 			file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-			#subprocess.call("salt-cp '*' " + os.path.join('assets/lib', filename) + " ~/lib", shell=True)
-			subprocess.call(os.path.join('assets/lib','deploy.sh'), shell=True)
+			local = salt.client.LocalClient()
+			ret = local.cmd('*', 'state.sls', ['copyfiles', 'saltenv=ctf'])
 			return 'succesfully added ' + file.filename
+
 		return ''
 
 @app.route('/exploit/all', methods=["GET"])		
