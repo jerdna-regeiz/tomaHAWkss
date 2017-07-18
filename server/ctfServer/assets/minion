@@ -5,6 +5,6 @@ if [ ! -d "git" ]; then
   	cd git
 	git clone https://github.com/jerdna-regeiz/tomaHAWkss.git
 else
-	cd git
+	cd git/tomaHAWkss
 	git pull
 fi
