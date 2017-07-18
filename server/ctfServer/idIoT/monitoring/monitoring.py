@@ -12,11 +12,6 @@ from time import sleep
 import inotify.adapters
 
 
-"""
-Verwaltet die Lokale und Remote Monitoring Instanzen und stellt gefundene Pakete bereit
-"""
-
-
 class Event:
     def __init__(self,timestamp, description, data, preceding_events=None):
         self.timestamp = timestamp

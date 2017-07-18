@@ -3,3 +3,4 @@ inotify==0.2.8
 pathlib==1.0.1
 requests==2.18.1
 paramiko==2.2.1
+salt==2017.7.0

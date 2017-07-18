@@ -122,8 +122,11 @@ def api_get_events():
 
 @monitoring.route("/")
 def index():
-    return render_template("index.html", regex=gru.list_regex_local(), status="running" if gru.monitor else "stopped",
-                           events=[{"timestamp":"heute","description": "something happened"}, {"timestamp":"morgen","description": "aeaeaehhh keine ahnung"}])
+    return render_template("monitoring.html", regex=gru.list_regex_local(),
+                           status="running" if gru.monitor else "stopped",
+                           events=[{"timestamp": "heute", "description": "something happened", "data": "testdata",
+                                    "preceding_events": [{"timestamp": "kurz vor heute", "description": "something happened"}]},
+                                   {"timestamp": "morgen", "description": "aeaeaehhh keine ahnung"}])
 
 
 @monitoring.route("/start_local")
@@ -135,7 +138,6 @@ def start_local():
 
 @monitoring.route("/stop_local")
 def stop_local():
-    sys.exit()
     gru.stop_monitoring_local()
     return redirect(url_for("monitoring.index"))
 
@@ -143,4 +145,12 @@ def stop_local():
 @monitoring.route("/add_regex_local", methods=['POST'])
 def add_regex_local():
     gru.add_regex_local(request.form["regex"])
+    return redirect(url_for("monitoring.index"))
+
+
+@monitoring.route("/remove_regex_local", methods=['POST'])
+def remove_regex_local():
+    for r in request.form.getlist("chkbx"):
+        gru.remove_regex_local(r)
+
     return redirect(url_for("monitoring.index"))
