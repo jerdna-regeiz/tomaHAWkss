@@ -1,0 +1,10 @@
+#!/bin/bash
+cd
+if [ ! -d "git" ]; then
+  	mkdir git
+  	cd git
+	git clone https://github.com/jerdna-regeiz/tomaHAWkss.git
+else
+	cd git
+	git pull
+fi

@@ -1,0 +1,8 @@
+Stand zur Zeit: Wenn ein Developer ein neuen Exploit geschrieben hat, fuegt er diesen der lib hier auf dem Sever hinzu.
+Wird ein neuer Minion gestartet, so sollte die initLib.sh ausgefuehrt werden(./initLib.sh), wodurch gewaehrleistet ist,
+dass alle Minions am gleichen Ort ihre Libraries haben.
+Dann kann jedes mal, wenn die Library geupdatet wurde, ein deploy.sh(./deploy.sh) ausgefuehrt werden, wodurch die Server-Lib
+automatisch auf alle Minions verteilt wird.
+Das Import der lib Funktionen muss vermutlich noch gemacht werden - hier Fehlt aber noch wissen ueber die Endstruktur,
+einfach von anderem Team kopieren
+
