@@ -15,7 +15,7 @@ class Gru:
         # monitoring lokal in thread starten
         if self.monitor is None:
             self.monitor = Monitoring()
-            self.monitor.start()
+            #self.monitor.start()
             return True
         else:
             return False

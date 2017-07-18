@@ -18,7 +18,8 @@ Verwaltet die Lokale und Remote Monitoring Instanzen und stellt gefundene Pakete
 
 
 class Event:
-    def __init__(self, description, data, preceding_events=None):
+    def __init__(self,timestamp, description, data, preceding_events=None):
+        self.timestamp = timestamp
         self.description = description
         self.data = data
         self.preceding_events = preceding_events
@@ -35,13 +36,14 @@ class Event:
     def to_dict(self):
         if self.preceding_events is not None:
             return {
+                "timestamp" : self.timestamp,
                 "description": self.description,
                 "data": self.data,
                 "preceding_events":
                 [x.to_dict() for x in self.preceding_events]
             }
         else:
-            return {"description": self.description, "data": self.data}
+            return {"timestamp": self.timestamp, "description": self.description, "data": self.data}
 
 
 class Monitoring(Thread):
@@ -151,13 +153,13 @@ class Monitoring(Thread):
         create_time = file.stat().st_ctime
         timestamp = datetime.datetime.fromtimestamp(create_time).strftime(
             '%Y-%m-%d %H:%M:%S')
-        description = "[{}] src: {}:{}, dst: {}:{}".format(
+        description = "src: {}:{}, dst: {}:{}".format(
             timestamp, *self.split_filename(file.name))
 
         with file.open("r") as fd:
             data = fd.read()
 
-        return Event(description, data, preceding_events)
+        return Event(timestamp, description, data, preceding_events)
 
     def scan_file(self, file):
         """Read a tcpflow packetfile and add it create an event if it matches one of the regexes """

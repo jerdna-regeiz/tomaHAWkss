@@ -11,6 +11,8 @@ from config import blueprints
 #from exploitsConfiguration.config import ExploitConfig
 
 app = Flask(__name__)
+app.secret_key= b'p\x03z\xaf*\xe6*:\xd8\x82\xfc\xb5<;\xbe\xd3\xe9s\xcbM\x01\xbe\xfbm'
+
 for blue in blueprints:
    app.register_blueprint(blue)
 
@@ -30,11 +32,6 @@ def exploit(name, period) :
 		deleteE={'status':'ok'}
 		return json.dumps(deleteE)
 	
-@app.route('/runMonitor/<regex>', methods=["POST"])
-def monitor(regex):
-	#Monitoring should be called here and response to the gui
-	monitor={'time' : '2017-07-03','result' : 'monitoring is running, here is the result'}
-	return json.dumps(monitor)
 
 @app.route('/exploitResult', methods=["POST"])
 def result():
