@@ -20,3 +20,7 @@ def monitor():
 @ui.route('/target')
 def target() :
     return render_template('target.html')
+
+@ui.route('/exploits')
+def exploits() :
+    return render_template('exploits.html')

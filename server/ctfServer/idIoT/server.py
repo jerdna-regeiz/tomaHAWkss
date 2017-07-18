@@ -5,12 +5,23 @@ from flask import Flask
 from flask import Response
 from flask import request
 from flask import json
+from flask.json import jsonify
+import subprocess
 
 from config import blueprints
 #exploit conf still doesnt work by me(lilli), please check it out
 #from exploitsConfiguration.config import ExploitConfig
 
-app = Flask(__name__)
+import os
+from os import walk
+from flask import Flask, request, redirect, url_for
+from werkzeug.utils import secure_filename
+
+UPLOAD_FOLDER = 'assets/lib'
+ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
+
+app = Flask(__name__, static_url_path='')
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 for blue in blueprints:
    app.register_blueprint(blue)
 
@@ -48,6 +59,45 @@ def target(name, user, password) :
 	#Target should be added and saved here
 	resp=Response("post request")
 	return resp	
+
+@app.route('/exploit/delete/<string:file_name>', methods=["DELETE"])
+def exploitDelete(file_name):
+	if request.method == 'DELETE':
+		os.remove(os.path.join(app.config['UPLOAD_FOLDER'], file_name))
+		return 'succesfully deleted ' + file_name
+
+@app.route('/exploit/upload', methods=["POST"])
+def exploitUpload():
+	if request.method == 'POST':
+        # check if the post request has the file part
+		if 'file' not in request.files:
+			flash('No file part')
+			return 'No file part'
+		
+		file = request.files['file']
+		# if user does not select file, browser also
+		# submit a empty part without filename
+		if file.filename == '':
+			flash('No selected file')
+			return 'No selected file'
+		if file and allowed_file(file.filename):
+			filename = secure_filename(file.filename)
+			file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+			subprocess.call("assets/deploy.sh", shell=True)
+			return 'succesfully added ' + file.filename
+		return ''
+
+@app.route('/exploit/all', methods=["GET"])		
+def getAllExploits():
+	f = []
+	for (dirpath, dirnames, filenames) in walk(app.config['UPLOAD_FOLDER']):
+		f.extend(filenames)
+		break
+	return jsonify({'data': f})
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 def run():
     port = 4567
