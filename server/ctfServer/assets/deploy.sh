@@ -1,5 +1,5 @@
 #/bin/bash
-cd lib
+cd assets/lib
 echo test
 for i in $(ls); do salt-cp '*' $i ~/lib ;done
 ## salt '*' cmd.run 'python import ~/lib/lib.py'

@@ -7,6 +7,7 @@ from flask import request
 from flask import json
 from flask.json import jsonify
 import subprocess
+import salt.client
 
 from config import blueprints
 #exploit conf still doesnt work by me(lilli), please check it out
@@ -64,6 +65,8 @@ def target(name, user, password) :
 def exploitDelete(file_name):
 	if request.method == 'DELETE':
 		os.remove(os.path.join(app.config['UPLOAD_FOLDER'], file_name))
+		local = salt.client.LocalClient()
+		local.cmd('*', 'cmd.run', ['rm ~/lib/' + file_name])
 		return 'succesfully deleted ' + file_name
 
 @app.route('/exploit/upload', methods=["POST"])
@@ -83,7 +86,8 @@ def exploitUpload():
 		if file and allowed_file(file.filename):
 			filename = secure_filename(file.filename)
 			file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-			subprocess.call(os.path.join('assets','deploy.sh'), shell=True)
+			subprocess.call(['salt-cp "*" ' + os.path.join(app.config['UPLOAD_FOLDER'], filename) + ' ~/lib'], shell=True)
+			#subprocess.call(os.path.join('assets','deploy.sh'), shell=True)
 			return 'succesfully added ' + file.filename
 		return ''
 

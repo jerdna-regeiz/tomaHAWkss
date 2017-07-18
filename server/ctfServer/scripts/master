@@ -14,11 +14,18 @@ git pull
 cd
 fi
 
+chmod +x src/tomaHAWkss/server/ctfServer/assets/initLib.sh
+chmod +x src/tomaHAWkss/server/ctfServer/assets/deploy.sh
+cd  src/tomaHAWkss/server/ctfServer/assets/
+./initLib.sh
+./deploy.sh
+cd
+
 pip install -r src/tomaHAWkss/server/ctfServer/idIoT/requirements.txt
-cp src/tomaHAWkss/server/ctfServer/scripts/minion assets/minion
+cp src/tomaHAWkss/server/ctfServer/scripts/minion minion
 
 salt "*" cmd.run "rm minion"
-salt-cp "*" assets/minion  ~/minion
+salt-cp "*" minion  ~/minion
 salt "*" cmd.run "chmod +x minion"
 salt "*" cmd.run "~/./minion"
 
