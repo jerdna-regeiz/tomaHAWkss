@@ -13,6 +13,7 @@ from flask import Flask, request, redirect, url_for
 from werkzeug.utils import secure_filename
 import subprocess
 
+import sys
 import logging
 logging.basicConfig(stream=sys.stdout, level=logging.DEBUG, format="%(message)s")
 
