@@ -20,6 +20,8 @@ UPLOAD_FOLDER = 'assets/lib'
 ALLOWED_EXTENSIONS = set(['py'])
 
 app = Flask(__name__, static_url_path='')
+app.secret_key= b'p\x03z\xaf*\xe6*:\xd8\x82\xfc\xb5<;\xbe\xd3\xe9s\xcbM\x01\xbe\xfbm'
+
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 for blue in blueprints:
     app.register_blueprint(blue)

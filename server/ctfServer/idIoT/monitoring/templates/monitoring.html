@@ -1,0 +1,121 @@
+<head>
+    <script type="text/javascript">
+        function selectall(source) {
+            checkboxes = document.getElementsByName('chkbx');
+            for (var i = 0, n = checkboxes.length; i < n; i++) {
+                checkboxes[i].checked = source.checked;
+            }
+        }
+    </script>
+</head>
+
+<style>
+    .tooltip {
+        position: relative;
+        /*display: inline-block;*/
+        border-bottom: 1px dotted black;
+    }
+
+    .tooltip .tooltiptext {
+        visibility: hidden;
+        /*width: 100%;*/
+        background-color: lightgrey;
+        /*color: white;*/
+        text-align: center;
+        border-radius: 6px;
+        padding: 5px 0;
+
+        /* Position the tooltip */
+        position: absolute;
+        z-index: 1;
+    }
+
+    .tooltip:hover .tooltiptext {
+        visibility: visible;
+    }
+</style>
+
+<html>
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+{% for message in messages %}
+<h4>{{ message }}</h4>
+{% endfor %}
+{% endif %}
+{% endwith %}
+
+
+<h3>Regex</h3>
+<form action="{{ url_for('monitoring.add_regex_local') }}" method="post">
+    <input type="text" name="regex"> <input type="submit" value="add">
+</form>
+
+<form action="{{ url_for('monitoring.remove_regex_local') }}" method="post">
+    <br>
+    <table border="1">
+        <tr>
+            <th><input type="checkbox" onClick="selectall(this)"></th>
+            <th>Regex</th>
+        </tr>
+        {% if regex %}
+        {% for r in regex %}
+        <tr>
+            <td><input type="checkbox" name="chkbx" value="{{ r }}"></td>
+            <td>{{ r }}</td>
+        </tr>
+        {% endfor %}
+        {% endif %}
+
+    </table>
+    <br>
+    <input type="submit" value="delete selected">
+</form>
+
+<br>
+<h3>Monitoring Status</h3>
+<form>
+    <input type="submit" value="start" formaction="{{ url_for('monitoring.start_local') }}"> <input type="submit"
+                                                                                                    value="stop"
+                                                                                                    formaction="{{ url_for('monitoring.stop_local') }}">
+    Status: {{ status }}
+</form>
+
+<h3>Events</h3>
+<table border="1">
+    <tr>
+        <th>Time</th>
+        <th>Match</th>
+        <th>Description</th>
+        <th>Data</th>
+        <th>Preceeding Events</th>
+    </tr>
+    {% if events %}
+    {% for e in events %}
+    <tr>
+        <td>{{ e['timestamp'] }}</td>
+        <td>{{ e['match'] }}</td>
+        <td>{{ e['description'] }}</td>
+        <td class="tooltip">######
+            <span class="tooltiptext">{{ e['data'] }}</span>
+        </td>
+        <td class="tooltip">######
+            <span class="tooltiptext">
+                <table border="1">
+                   <tr>
+                    <th>Time</th>
+                    <th>Description</th>
+                   </tr>
+                    {% if e['preceding_events'] %}
+                    {% for p in e['preceding_events'] %}
+                        <td>{{ p.timestamp }}</td>
+                        <td>{{ p.description }}</td>
+                    {% endfor %}
+                    {% endif %}
+                </table>
+            </span>
+        </td>
+    </tr>
+    {% endfor %}
+    {% endif %}
+</table>
+</html>
