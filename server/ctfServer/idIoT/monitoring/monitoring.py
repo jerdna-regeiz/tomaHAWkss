@@ -104,7 +104,7 @@ class Monitoring(Thread):
         i = inotify.adapters.Inotify()
 
         self.proc = Popen(
-            ["tcpflow", "-i", "lo", "-S", "enable_report=NO"], cwd=self.p.as_posix())
+            ["tcpflow",  "-S", "enable_report=NO"], cwd=self.p.as_posix())
 
         i.add_watch(b"/tmp/tcpflow")
 
@@ -143,7 +143,7 @@ class Monitoring(Thread):
         print(
             datetime.datetime.fromtimestamp(create_time).strftime(
                 '%Y-%m-%d %H:%M:%S'))
-        print("src: {}:{}, dst: {}:{}".format(*self.split_filename(file.name)))
+        print("{}:{} --> {}:{}".format(*self.split_filename(file.name)))
         if data:
             with file.open("r") as fd:
                 print(fd.read())
