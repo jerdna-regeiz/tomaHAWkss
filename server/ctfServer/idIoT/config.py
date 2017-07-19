@@ -6,7 +6,7 @@ from idIoT.bib.blueprint import bib
 from idIoT.monitoring.blueprint import monitoring
 
 blueprints = [
-            ui,
-            bib,
-            monitoring
-        ]
+    ui,
+    bib,
+    monitoring
+]

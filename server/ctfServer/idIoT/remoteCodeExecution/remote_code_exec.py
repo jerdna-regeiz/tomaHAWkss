@@ -6,8 +6,8 @@ from paramiko import SSHClient
 
 
 def execute(file, remote_path, host, user, pw=''):
-    destexploit=remote_path
-    exploit_to_execute=file
+    destexploit = remote_path
+    exploit_to_execute = file
     print (host)
     print (user)
 
@@ -22,4 +22,3 @@ def execute(file, remote_path, host, user, pw=''):
     stdin, stdout, stderr = ssh.exec_command(destexploit)
     print "stderr: ", stderr.readlines()
     print "pwd: ", stdout.readlines()
-

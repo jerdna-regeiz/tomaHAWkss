@@ -4,8 +4,8 @@
 from flask import Blueprint, render_template, abort
 from jinja2 import TemplateNotFound
 
-bib = Blueprint('bib', __name__,
-                        template_folder='templates')
+bib = Blueprint('bib', __name__, template_folder='templates')
+
 
 @bib.route('/bib')
 def show():
