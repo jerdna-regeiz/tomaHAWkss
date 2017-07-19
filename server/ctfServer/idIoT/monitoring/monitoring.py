@@ -145,7 +145,7 @@ class Monitoring(Thread):
                 '%Y-%m-%d %H:%M:%S'))
         print("{}:{} --> {}:{}".format(*self.split_filename(file.name)))
         if data:
-            with file.open("r") as fd:
+            with file.open("rb") as fd:
                 print(fd.read())
         print("##########################")
 
@@ -155,7 +155,7 @@ class Monitoring(Thread):
         timestamp = datetime.datetime.fromtimestamp(create_time).strftime('%Y-%m-%d %H:%M:%S')
         description = "src: {}:{}, dst: {}:{}".format(*self.split_filename(file.name))
 
-        with file.open("r") as fd:
+        with file.open("rb") as fd:
             data = fd.read()
 
         return Event(timestamp, match, description, data, preceding_events)
@@ -163,7 +163,7 @@ class Monitoring(Thread):
     def scan_file(self, file):
         """Read a tcpflow packetfile and add it create an event if it matches one of the regexes """
 
-        with file.open("r") as fd:
+        with file.open("rb") as fd:
             s = fd.read()
         for r in self.regs:
             if re.findall(r, s):

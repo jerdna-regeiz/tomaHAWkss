@@ -44,13 +44,6 @@ def exploit(name, period):
         return json.dumps(deleteE)
 
 
-@app.route('/runMonitor/<regex>', methods=["POST"])
-def monitor(regex):
-    # Monitoring should be called here and response to the gui
-    monitor = {'time': '2017-07-03', 'result': 'monitoring is running, here is the result'}
-    return json.dumps(monitor)
-
-
 @app.route('/exploitResult', methods=["POST"])
 def result():
     # so should implement result(a json object) of all exploit with its status sofar
