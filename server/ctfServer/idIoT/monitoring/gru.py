@@ -15,7 +15,7 @@ class Gru:
         # monitoring lokal in thread starten
         if self.monitor is None:
             self.monitor = Monitoring()
-            #self.monitor.start()
+            self.monitor.start()
             return True
         else:
             return False
@@ -54,7 +54,7 @@ class Gru:
             self.monitor.remove_regex(regex)
             return True
 
-    def remove_regex_remote(self,remote, regex):
+    def remove_regex_remote(self, remote, regex):
         requests.post("http://{}:5000/del_regex".format(remote), data={'regex': regex})
 
     def list_regex_local(self):
@@ -70,12 +70,11 @@ class Gru:
     def get_events(self):
         events = []
         if self.monitor is not None:
-            events.append(self.monitor.get_events_dict())
-
+            events.extend(self.monitor.get_events_dict())
 
         for minion in self.minions:
             response = requests.get("http://{}:5000/get_events".format(minion))
-            events.append(json.loads(response.content))
+            events.extend(json.loads(response.content))
         # events von allen aktiven monitor instanzen abfragen
 
         return events

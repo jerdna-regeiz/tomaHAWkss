@@ -84,6 +84,7 @@
 <table border="1">
     <tr>
         <th>Time</th>
+        <th>Match</th>
         <th>Description</th>
         <th>Data</th>
         <th>Preceeding Events</th>
@@ -92,6 +93,7 @@
     {% for e in events %}
     <tr>
         <td>{{ e['timestamp'] }}</td>
+        <td>{{ e['match'] }}</td>
         <td>{{ e['description'] }}</td>
         <td class="tooltip">######
             <span class="tooltiptext">{{ e['data'] }}</span>

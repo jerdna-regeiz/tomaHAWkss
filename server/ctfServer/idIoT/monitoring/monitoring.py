@@ -13,8 +13,9 @@ import inotify.adapters
 
 
 class Event:
-    def __init__(self,timestamp, description, data, preceding_events=None):
+    def __init__(self, timestamp, match, description, data, preceding_events=None):
         self.timestamp = timestamp
+        self.match = match
         self.description = description
         self.data = data
         self.preceding_events = preceding_events
@@ -31,14 +32,20 @@ class Event:
     def to_dict(self):
         if self.preceding_events is not None:
             return {
-                "timestamp" : self.timestamp,
+                "timestamp": self.timestamp,
+                "match": self.match,
                 "description": self.description,
                 "data": self.data,
                 "preceding_events":
-                [x.to_dict() for x in self.preceding_events]
+                    [x.to_dict() for x in self.preceding_events]
             }
         else:
-            return {"timestamp": self.timestamp, "description": self.description, "data": self.data}
+            return {
+                "timestamp": self.timestamp,
+                "match": self.match,
+                "description": self.description,
+                "data": self.data
+            }
 
 
 class Monitoring(Thread):
@@ -112,20 +119,19 @@ class Monitoring(Thread):
                         self.file_count += 1
                         if self.file_count > self.max_files:
                             self.cleanup()
-                        #s = filename.decode()
+                        # s = filename.decode()
                         self.scan_file(self.p.joinpath(filename))
-
 
         finally:
             i.remove_watch(b"/tmp/tcpflow")
-            
+
             # deleting packets 
             for f in self.p.iterdir():
                 f.unlink()
 
             # make sure to kill tcpflow
-            #self.proc.terminate()
-            self.proc.kill()
+            # self.proc.terminate()
+            self.proc.send_signal(2) # SIGINT / ^C
 
     def split_filename(self, filename):
         """Parse a tcpflow filename and return a tuple (src_adress,src_port,dsta_ddress,dst_port) """
@@ -143,28 +149,25 @@ class Monitoring(Thread):
                 print(fd.read())
         print("##########################")
 
-    def create_event(self, file, preceding_events=None):
+    def create_event(self, file, match, preceding_events=None):
         """Return a Event instance from a tcpflow file"""
         create_time = file.stat().st_ctime
-        timestamp = datetime.datetime.fromtimestamp(create_time).strftime(
-            '%Y-%m-%d %H:%M:%S')
-        description = "src: {}:{}, dst: {}:{}".format(
-            timestamp, *self.split_filename(file.name))
+        timestamp = datetime.datetime.fromtimestamp(create_time).strftime('%Y-%m-%d %H:%M:%S')
+        description = "src: {}:{}, dst: {}:{}".format(*self.split_filename(file.name))
 
         with file.open("r") as fd:
             data = fd.read()
 
-        return Event(timestamp, description, data, preceding_events)
+        return Event(timestamp, match, description, data, preceding_events)
 
     def scan_file(self, file):
         """Read a tcpflow packetfile and add it create an event if it matches one of the regexes """
 
-        print(file.absolute())
         with file.open("r") as fd:
             s = fd.read()
         for r in self.regs:
             if re.findall(r, s):
-                event = self.create_event(file)
+                event = self.create_event(file, r)
                 create_time = file.stat().st_ctime
 
                 event_list = []
@@ -175,13 +178,12 @@ class Monitoring(Thread):
                 for i in self.p.iterdir():
                     ctime = i.stat().st_ctime
                     if i.name != file.name:
-                        if ctime < (create_time + 1) and ctime > (
-                                create_time - self.time_delta):
+                        if (create_time + 1) > ctime > (
+                                    create_time - self.time_delta):
                             if src in i.name and dst in i.name:
                                 # self.pretty_print_file(i, False)
-                                event_list.append(self.create_event(i))
+                                event_list.append(self.create_event(i, r))
 
-                event = self.create_event(file, event_list)
+                event = self.create_event(file, r, event_list)
 
                 self.events.append(event)
-
