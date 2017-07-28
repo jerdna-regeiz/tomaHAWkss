@@ -1,10 +1,19 @@
 #!/bin/bash
 cd
+
 if [ ! -d "git" ]; then
-  	mkdir git
-  	cd git
-	git clone https://github.com/jerdna-regeiz/tomaHAWkss.git
+mkdir git
+cd git
+virtualenv venv
+source venv/bin/activate
+git clone https://github.com/jerdna-regeiz/tomaHAWkss.git
+pip install virtualenvwrapper
+. ~/src/venv/bin/virtualenvwrapper.sh
+add2virtualenv src/tomaHAWkss/server/ctfServer/assets/modules
+cd
 else
-	cd git/tomaHAWkss
-	git pull
+cd git/tomaHAWkss
+git pull
+cd
 fi
+
