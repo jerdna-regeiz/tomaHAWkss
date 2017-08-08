@@ -33,5 +33,5 @@ def exploits():
     return render_template('exploits.html')
 
 @ui.route('/modules')
-def exploits():
+def modules():
     return render_template('modules.html')
