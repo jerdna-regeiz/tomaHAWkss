@@ -1,3 +1,4 @@
 ctf:
   '*':
-    - copyfiles
+    - cplib
+    - cpmodules

@@ -31,3 +31,7 @@ def target():
 @ui.route('/exploits')
 def exploits():
     return render_template('exploits.html')
+
+@ui.route('/modules')
+def exploits():
+    return render_template('modules.html')

@@ -16,13 +16,15 @@ logging.basicConfig(stream=sys.stdout, level=logging.DEBUG, format="%(message)s"
 
 import salt.client
 
-UPLOAD_FOLDER = 'assets/lib'
+LIB_UPLOAD_FOLDER = 'assets/lib'
+MODULES_UPLOAD_FOLDER = 'assets/modules'
 ALLOWED_EXTENSIONS = set(['py'])
 
 app = Flask(__name__, static_url_path='')
 app.secret_key= b'p\x03z\xaf*\xe6*:\xd8\x82\xfc\xb5<;\xbe\xd3\xe9s\xcbM\x01\xbe\xfbm'
 
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.config['LIB_UPLOAD_FOLDER'] = LIB_UPLOAD_FOLDER
+app.config['MODULES_UPLOAD_FOLDER'] = MODULES_UPLOAD_FOLDER
 for blue in blueprints:
     app.register_blueprint(blue)
 
@@ -58,11 +60,18 @@ def target(name, user, password):
     resp = Response("post request")
     return resp
 
+@app.route('/exploit/all', methods=["GET"])
+def getAllExploits():
+    f = []
+    for (dirpath, dirnames, filenames) in walk(app.config['LIB_UPLOAD_FOLDER']):
+        f.extend(filenames)
+        break
+    return jsonify({'data': f})
 
 @app.route('/exploit/delete/<string:file_name>', methods=["DELETE"])
 def exploitDelete(file_name):
     if request.method == 'DELETE':
-        os.remove(os.path.join(app.config['UPLOAD_FOLDER'], file_name))
+        os.remove(os.path.join(app.config['LIB_UPLOAD_FOLDER'], file_name))
         local = salt.client.LocalClient()
         local.cmd('*', 'cmd.run', ['rm ~/lib/' + file_name])
         return 'succesfully deleted ' + file_name
@@ -85,21 +94,45 @@ def exploitUpload():
 
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            file.save(os.path.join(app.config['LIB_UPLOAD_FOLDER'], filename))
             local = salt.client.LocalClient()
-            ret = local.cmd('*', 'state.sls', ['copyfiles', 'saltenv=ctf'])
+            ret = local.cmd('*', 'state.sls', ['cplib', 'saltenv=ctf'])
             return 'succesfully added ' + file.filename
 
         return ''
 
+@app.route('/module/delete/<string:file_name>', methods=["DELETE"])
+def moduleDelete(file_name):
+    if request.method == 'DELETE':
+        os.remove(os.path.join(app.config['MODULES_UPLOAD_FOLDER'], file_name))
+        local = salt.client.LocalClient()
+        local.cmd('*', 'cmd.run', ['rm ~/modules/' + file_name])
+        return 'succesfully deleted ' + file_name
 
-@app.route('/exploit/all', methods=["GET"])
-def getAllExploits():
-    f = []
-    for (dirpath, dirnames, filenames) in walk(app.config['UPLOAD_FOLDER']):
-        f.extend(filenames)
-        break
-    return jsonify({'data': f})
+
+@app.route('/module/upload', methods=["POST"])
+def moduleUpload():
+    if request.method == 'POST':
+        # check if the post request has the file part
+        if 'file' not in request.files:
+            flash('No file part')
+            return 'No file part'
+
+        file = request.files['file']
+        # if user does not select file, browser also
+        # submit a empty part without filename
+        if file.filename == '':
+            flash('No selected file')
+            return 'No selected file'
+
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(app.config['MODULES_UPLOAD_FOLDER'], filename))
+            local = salt.client.LocalClient()
+            ret = local.cmd('*', 'state.sls', ['cpmodules', 'saltenv=ctf'])
+            return 'succesfully added ' + file.filename
+
+        return ''
 
 
 def allowed_file(filename):
