@@ -37,7 +37,7 @@
     </nav>
     <div class="container p-t-50" ng-controller="exploitsController">
       
-        <form action="/module/upload" method="POST">
+        <form action="/module/upload" method="POST" enctype="multipart/form-data">
             <input type="file" name="file" />
             <input type="submit" />
         </form>
